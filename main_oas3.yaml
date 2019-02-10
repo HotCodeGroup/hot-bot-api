@@ -51,15 +51,50 @@ components:
           example: 'vitalik2007@gmail.com'
         firstName:
           type: string
-          description: "User first name"
+          description: 'User first name'
           example: 'Vitaly'
         lastName:
           type: string
-          description: "User last name"
+          description: 'User last name'
           example: 'Pryahov'
         active:
           type: boolean
-          description: "Returns if a profile is blocked"
+          description: 'Returns if a profile is blocked'
           example: true
-        
-
+    Bot:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 'Bot unique ID'
+          example: 1
+        authorID:
+          type: integer
+          format: int64
+          description: 'ID of user who creates that bot'
+          example: 1
+        timestamp:
+          type: integer
+          format: int64
+          description: 'Timestamp when bot was sended in Unixtime'
+          example: 947419200
+        code:
+          type: string
+          description: 'Source code of bot'
+          example: 'a=5'
+        approved:
+          type: boolean
+          description: 'Returns if bot was validated'
+          example: true
+        lastGames:
+          type: array
+          description: 'Last games IDs with given offset and count'
+          items:
+            type: integer
+            format: int64
+          example:
+            - 1
+            - 2
+            - 3  
+          
