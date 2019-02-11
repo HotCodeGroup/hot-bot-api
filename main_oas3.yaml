@@ -99,6 +99,12 @@ components:
             - 3  
     Game: 
       type: object
+      required:
+        - id
+        - title
+        - description
+        - rulesURL
+        - active
       properties:
         id:
           type: integer
