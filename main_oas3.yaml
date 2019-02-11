@@ -101,4 +101,37 @@ components:
             - 1
             - 2
             - 3  
-          
+    Game: 
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - rulesURL
+        - active
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 'game ID'
+          example: 1
+        title: 
+          type: string
+          description: 'name of game'
+          example: 'Ping Pong'  
+        description:
+          type: string
+          description: 'description of game'
+          example: 'Write bot for playing ping pong'          
+        rulesURL: 
+          type: string
+          description: 'url to the rules for game'
+          example: 'https://hotbot.game/s/1548595030145/assets/documentation/pingpong.pdf?rnd'
+        previewURL: 
+          type: string
+          description: 'url to the game`s preview'
+          example: 'https://hotbot.game/s/1548595030145/assets/application/img/ping-pong-sample.png'
+        active:
+          type: boolean
+          description: 'Returns if a game is available for new bots'
+          example: true
