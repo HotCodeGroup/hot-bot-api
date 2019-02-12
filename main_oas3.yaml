@@ -12,6 +12,7 @@ paths:
         - users
       summary: Get user info by ID
       operationId: getUser
+      security: []
       responses:
         '200':
           description: User found
@@ -55,15 +56,14 @@ paths:
         required: true
         schema:
           type: integer
-          format: int64
-
-        
+          format: int64    
   /signup:
     post:
       tags:
         - users
       summary: Creates new user
-      operationId: createUser
+      operationId: signUpUser
+      security: []
       requestBody: 
         required: true
         content:
@@ -77,8 +77,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FormErrors'
-                                
+  /signin:
+    post:
+      tags:
+        - users
+      summary: Signs in and returns the authentication cookie
+      operationId: signInUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInUser'
+      responses:
+        '200':
+          description: Returns empty struct if user signed in or errors
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/Error'
 components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
   schemas:
     Error:
       type: object
