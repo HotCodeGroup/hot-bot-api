@@ -12,14 +12,6 @@ paths:
         - users
       summary: Get user info by ID
       operationId: getUser
-      parameters:
-        - name: userID
-          in: path
-          description: ID of user that needs to be get
-          required: true
-          schema:
-            type: integer
-            format: int64
       responses:
         '200':
           description: User found
@@ -27,6 +19,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InfoUser'
+    post:
+      tags:
+        - users
+      summary: Update user info by ID
+      operationId: updateUser
+      requestBody:
+        description: Contains fields update to
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/BasicUser'
+                - type: object
+                  properties:
+                    oldPassword:
+                      type: string
+                      description: Confirms old password for change password operation
+                      example: qwerty1234
+                    newPassword:
+                      type: string
+                      description: New password for change password operation  
+      responses:
+        '200':
+          description: Returns empty struct if user updated or errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormErrors'
+    parameters:
+      - name: userID
+        in: path
+        description: ID of user that needs to be get
+        required: true
+        schema:
+          type: integer
+          format: int64
+
+        
   /signup:
     post:
       tags:
@@ -45,12 +76,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/Error'                 
+                $ref: '#/components/schemas/FormErrors'
+                                
 components:
   schemas:
     Error:
@@ -70,11 +97,22 @@ components:
         description:
           type: string
           description: Describes error for developer
-          example: Database error UNIQUE field  
+          example: Database error UNIQUE field
+    FormErrors:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            other:
+              type: array
+              description: Other errors, not associated with fields
+              items:
+                $ref: '#/components/schemas/Error'
+          additionalProperties:
+            $ref: '#/components/schemas/Error' 
     BasicUser:
       type: object
-      required:
-        - username
       properties:
         username:
           type: string
