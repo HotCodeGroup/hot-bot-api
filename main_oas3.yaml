@@ -25,6 +25,8 @@ paths:
         - users
       summary: Update user info by ID
       operationId: updateUser
+      security:
+        - cookieAuth: []
       requestBody:
         description: Contains fields update to
         required: true
@@ -41,7 +43,43 @@ paths:
                       example: qwerty1234
                     newPassword:
                       type: string
-                      description: New password for change password operation  
+                      description: New password for change password operation
+                      example: qwerty4321
+      responses:
+        '200':
+          description: Returns empty struct if user updated or errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormErrors'
+    parameters:
+      - name: userID
+        in: path
+        description: ID of user that needs to be get
+        required: true
+        schema:
+          type: integer
+          format: int64
+  /users/{userID}/delete:
+    post:
+      tags:
+        - users
+      summary: Deletes user account
+      operationId: deleteUser
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: Contains password to confirm deletion
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: Password for confirm
+                  example: qwerty1234
       responses:
         '200':
           description: Returns empty struct if user updated or errors
@@ -60,7 +98,7 @@ paths:
   /signup:
     post:
       tags:
-        - users
+        - auth
       summary: Creates new user
       operationId: signUpUser
       security: []
@@ -80,7 +118,7 @@ paths:
   /signin:
     post:
       tags:
-        - users
+        - auth
       summary: Signs in and returns the authentication cookie
       operationId: signInUser
       security: []
@@ -152,18 +190,6 @@ components:
           type: string
           description: Name for login
           example: xXxNaGiBaToRxXx
-        email:
-          type: string
-          description: User email
-          example: vitalik2007@gmail.com
-        firstName:
-          type: string
-          description: User first name
-          example: Vitaly
-        lastName:
-          type: string
-          description: User last name
-          example: Pryahov
     InfoUser:
       allOf:
         - $ref: '#/components/schemas/BasicUser'
