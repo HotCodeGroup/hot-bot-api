@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Hot bot API
+  title: WarScript API
   version: 0.0.1
   contact:
     name: HotCodeGroup
