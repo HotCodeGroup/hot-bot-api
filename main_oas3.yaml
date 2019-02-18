@@ -94,7 +94,41 @@ paths:
         required: true
         schema:
           type: integer
-          format: int64    
+          format: int64
+  /users/username_check:
+    post:
+      tags:
+        - users
+      summary: Checks if username already used
+      operationId: checkUsername
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+              properties:
+                username:
+                  type: string
+                  description: Username to check
+                  example: BaCeK1338  
+      responses:
+        '200':
+          description: Returns used = true if username already used
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - used
+                properties:
+                  used:
+                    type: boolean
+                    description: True if usernamed used
+                    example: false
   /signup:
     post:
       tags:
