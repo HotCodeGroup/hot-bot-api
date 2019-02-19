@@ -224,14 +224,13 @@ components:
       properties:
         errors:
           type: object
-          properties:
-            other:
-              type: array
-              description: Other errors, not associated with fields
-              items:
-                $ref: '#/components/schemas/Error'
           additionalProperties:
-            $ref: '#/components/schemas/Error' 
+            $ref: '#/components/schemas/Error'
+        other:
+          type: array
+          description: Other errors, not associated with fields
+          items:
+            $ref: '#/components/schemas/Error'
     BasicUser:
       type: object
       properties:
