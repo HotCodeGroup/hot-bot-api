@@ -173,12 +173,27 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: object
-                    additionalProperties:
-                      $ref: '#/components/schemas/Error'
+                oneOf:
+                  - $ref: '#/components/schemas/FormErrors'
+                  - $ref: '#/components/schemas/InfoUser'         
+  /signout:
+    post:
+      tags:
+        - auth
+      summary: Signs out and deletes the authentication cookie
+      operationId: signOutUser
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Deletes the authentication cookie
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+        '401':
+          description: Need to be logged in to signout
 components:
   securitySchemes:
     cookieAuth:
