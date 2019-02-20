@@ -64,7 +64,8 @@ paths:
     post:
       tags:
         - users
-      summary: Deletes user account
+      deprecated: true
+      summary: Deletes user account(temproraty deprecated)
       operationId: deleteUser
       security:
         - cookieAuth: []
@@ -82,11 +83,18 @@ paths:
                   example: qwerty1234
       responses:
         '200':
-          description: Returns empty struct if user updated or errors
+          description: Returns empty struct(and deletes cookie) if user updated or errors
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FormErrors'
+        '401':
+          description: Need to be logged in to signout
     parameters:
       - name: userID
         in: path
