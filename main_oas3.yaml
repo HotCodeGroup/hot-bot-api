@@ -51,7 +51,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormErrors'
+                $ref: '#/components/schemas/Errors'
+        '403':
+          description: You don't have permission to update this user
     parameters:
       - name: userID
         in: path
@@ -92,7 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormErrors'
+                $ref: '#/components/schemas/Errors'
         '401':
           description: Need to be logged in to signout
     parameters:
@@ -156,7 +158,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormErrors'
+                $ref: '#/components/schemas/Errors'
   /signin:
     post:
       tags:
@@ -182,7 +184,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/FormErrors'
+                  - $ref: '#/components/schemas/Errors'
                   - $ref: '#/components/schemas/InfoUser'         
   /signout:
     post:
@@ -227,18 +229,15 @@ components:
           type: string
           description: Describes error for developer
           example: Database error UNIQUE field
-    FormErrors:
+    Errors:
       type: object
       properties:
-        errors:
+        fields:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Error'
         other:
-          type: array
-          description: Other errors, not associated with fields
-          items:
-            $ref: '#/components/schemas/Error'
+          $ref: '#/components/schemas/Error'
     BasicUser:
       type: object
       properties:
