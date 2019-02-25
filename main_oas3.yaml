@@ -129,6 +129,8 @@ paths:
       responses:
         '200':
           description: Returns empty struct if user updated or errors
+        '400':
+          description: Failed to falidate
           content:
             application/json:
               schema:
