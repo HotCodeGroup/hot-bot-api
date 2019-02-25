@@ -30,13 +30,17 @@ paths:
                 type: string
                 example: JSESSIONID=abcde12345; Path=/; HttpOnly
         '400':
-          description: User was deleted or doesn't exist
+          description: Failed to sign in due to incorrect data
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Errors'
         '500':
-          $ref: '#/components/schemas/InternalServerError' 
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       tags:
         - auth
@@ -53,13 +57,21 @@ paths:
                 type: string
                 example: JSESSIONID=abcde12345; Path=/; HttpOnly
         '401':
-          description: Need to be logged in to signout
+          description: Need to be signed in to logout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
-          $ref: '#/components/schemas/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /v1/user:
     post:
       tags:
-        - auth
+        - users
       summary: Creates new user
       operationId: signUpUser
       security: []
@@ -84,7 +96,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Errors'
         '500':
-          $ref: '#/components/schemas/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     put:
       tags:
         - users
@@ -119,8 +135,16 @@ paths:
                 $ref: '#/components/schemas/Errors'
         '401':
           description: Need to be logged in to update account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
         '500':
-          $ref: '#/components/schemas/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       tags:
         - users
@@ -143,8 +167,16 @@ paths:
                 $ref: '#/components/schemas/Errors'
         '401':
           description: Need to be logged in to delete account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
         '500':
-          $ref: '#/components/schemas/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /v1/users/{userID}:
     get:
       tags:
@@ -159,8 +191,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InfoUser'
+        '404':
+          description: user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
         '500':
-          $ref: '#/components/schemas/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - name: userID
+          in: path
+          description: id of user that needs to be get
+          required: true
+          schema:
+            type: integer
   /v1/users/username_check:
     post:
       tags:
@@ -196,7 +245,11 @@ paths:
                     description: True if usernamed used
                     example: false
         '500':
-          $ref: '#/components/schemas/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     cookieAuth:
@@ -231,10 +284,7 @@ components:
             $ref: '#/components/schemas/Error'
         other:
           $ref: '#/components/schemas/Error'
-    InternalServerError:
-      description: internal server error
-    ValidationFailed:
-      description: failed to validate
+    
     BasicUser:
       type: object
       properties:
