@@ -1,29 +1,94 @@
 openapi: 3.0.0
+servers:
+  - url: http://api.warscript.tech
 info:
-  title: WarScript API
+  title: WarScript API 
   version: 0.0.1
   contact:
     name: HotCodeGroup
     url: https://github.com/HotCodeGroup
 paths:
-  /users/{userID}:
-    get:
+  /v1/session/:
+    post:
       tags:
-        - users
-      summary: Get user info by ID
-      operationId: getUser
+        - auth
+      summary: Signs in and returns the authentication cookie
+      operationId: signInUser
       security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInUser'
       responses:
         '200':
-          description: User found
+          description: User successfully logged in
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+        '400':
+          description: User was deleted or doesn't exist
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InfoUser'
+                $ref: '#/components/schemas/Errors'
+        '500':
+          $ref: '#/components/schemas/InternalServerError' 
+    delete:
+      tags:
+        - auth
+      summary: Signs out and deletes the authentication cookie
+      operationId: signOutUser
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Deletes the authentication cookie
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+        '401':
+          description: Need to be logged in to signout
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+  /v1/user:
     post:
       tags:
+        - auth
+      summary: Creates new user
+      operationId: signUpUser
+      security: []
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpUser'
+      responses:
+        '200':
+          description: User successfully signed up and logged in
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+        '400':
+          description: Signing up failed due to validation errors or user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+    put:
+      tags:
         - users
-      summary: Update user info by ID
+      summary: Update user info
       operationId: updateUser
       security:
         - cookieAuth: []
@@ -52,18 +117,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Errors'
-        '403':
-          description: You don't have permission to update this user
-    parameters:
-      - name: userID
-        in: path
-        description: ID of user that needs to be get
-        required: true
-        schema:
-          type: integer
-          format: int64
-  /users/{userID}/delete:
-    post:
+        '401':
+          description: Need to be logged in to update account
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+    delete:
       tags:
         - users
       deprecated: true
@@ -71,18 +129,6 @@ paths:
       operationId: deleteUser
       security:
         - cookieAuth: []
-      requestBody:
-        description: Contains password to confirm deletion
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                password:
-                  type: string
-                  description: Password for confirm
-                  example: qwerty1234
       responses:
         '200':
           description: Returns empty struct(and deletes cookie) if user updated or errors
@@ -96,16 +142,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Errors'
         '401':
-          description: Need to be logged in to signout
-    parameters:
-      - name: userID
-        in: path
-        description: ID of user that needs to be get
-        required: true
-        schema:
-          type: integer
-          format: int64
-  /users/username_check:
+          description: Need to be logged in to delete account
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+  /v1/users/{userID}:
+    get:
+      tags:
+        - users
+      summary: Get user info by ID
+      operationId: getUser
+      security: []
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoUser'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+  /v1/users/username_check:
     post:
       tags:
         - users
@@ -139,71 +195,8 @@ paths:
                     type: boolean
                     description: True if usernamed used
                     example: false
-  /signup:
-    post:
-      tags:
-        - auth
-      summary: Creates new user
-      operationId: signUpUser
-      security: []
-      requestBody: 
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SignUpUser'
-      responses:
-        '200':
-          description: Returns empty struct if user created or errors
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Errors'
-  /signin:
-    post:
-      tags:
-        - auth
-      summary: Signs in and returns the authentication cookie
-      operationId: signInUser
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SignInUser'
-      responses:
-        '200':
-          description: Returns empty struct if user signed in or errors
-          headers: 
-            Set-Cookie:
-              schema: 
-                type: string
-                example: JSESSIONID=abcde12345; Path=/; HttpOnly
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Errors'
-                  - $ref: '#/components/schemas/InfoUser'         
-  /signout:
-    post:
-      tags:
-        - auth
-      summary: Signs out and deletes the authentication cookie
-      operationId: signOutUser
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: Deletes the authentication cookie
-          headers: 
-            Set-Cookie:
-              schema: 
-                type: string
-                example: JSESSIONID=abcde12345; Path=/; HttpOnly
-        '401':
-          description: Need to be logged in to signout
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
 components:
   securitySchemes:
     cookieAuth:
@@ -238,6 +231,10 @@ components:
             $ref: '#/components/schemas/Error'
         other:
           $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: internal server error
+    ValidationFailed:
+      description: failed to validate
     BasicUser:
       type: object
       properties:
