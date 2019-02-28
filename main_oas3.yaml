@@ -48,7 +48,8 @@ paths:
                 type: string
                 example: JSESSIONID=abcde12345; Path=/; HttpOnly
         '400':
-          description: Failed to sign in due to incorrect data
+          description: "username: not_exists|required; 
+                        password: invalid|required"
           content:
             application/json:
               schema:
@@ -96,7 +97,8 @@ paths:
                 type: string
                 example: JSESSIONID=abcde12345; Path=/; HttpOnly
         '400':
-          description: Signing up failed due to validation errors or user already exists
+          description: "username: taken|required; 
+                        password: required"
           content:
             application/json:
               schema:
@@ -132,7 +134,8 @@ paths:
         '200':
           description: Returns empty struct if user updated or errors
         '400':
-          description: Failed to falidate
+          description: "username: taken; 
+                        oldPassword: invalid|required(if newPassword used)"
           content:
             application/json:
               schema:
