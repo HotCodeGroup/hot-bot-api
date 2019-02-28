@@ -228,6 +228,16 @@ paths:
                     type: boolean
                     description: True if usernamed used
                     example: false
+        '429':
+          description: only 1 request per second
+          headers:
+            Retry-After:
+              schema: 
+                type: integer
+                description: A non-negative number of seconds that
+                            indicates the time to wait before a new request.
+                example: 1
+            
         '500':
           $ref: '#/components/responses/InternalServer'
 components:
@@ -253,17 +263,12 @@ components:
     Error:
       type: object
       required:
-        - code
         - message
       properties:
-        code:
-          type: integer
-          description: Code of error
-          example: 15
         message:
           type: string
-          description: Message to display for user
-          example: Already used!
+          description: error description
+          example: taken
     ValidateError:
       type: object
       additionalProperties:
