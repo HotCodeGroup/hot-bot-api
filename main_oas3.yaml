@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: http://api.warscript.tech
+  - url: http://api.warscript.tech/v1
 info:
   title: WarScript API 
   version: 0.0.1
@@ -8,7 +8,25 @@ info:
     name: HotCodeGroup
     url: https://github.com/HotCodeGroup
 paths:
-  /v1/session/:
+  /session/:
+    get:
+      tags:
+        - auth
+      summary: Returns user info who logged in
+      operationId: getSessionUser
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Returns userinfo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServer'
     post:
       tags:
         - auth
@@ -34,13 +52,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/ValidateError'
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/InternalServer'
     delete:
       tags:
         - auth
@@ -57,18 +71,10 @@ paths:
                 type: string
                 example: JSESSIONID=abcde12345; Path=/; HttpOnly
         '401':
-          description: Need to be signed in to logout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /v1/user:
+          $ref: '#/components/responses/InternalServer'
+  /user:
     post:
       tags:
         - users
@@ -94,13 +100,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/ValidateError'
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/InternalServer'
     put:
       tags:
         - users
@@ -134,19 +136,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/ValidateError'
         '401':
-          description: Need to be logged in to update account
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Errors'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/InternalServer'
     delete:
       tags:
         - users
@@ -166,20 +160,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/ValidateError'
         '401':
-          description: Need to be logged in to delete account
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Errors'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /v1/users/{userID}:
+          $ref: '#/components/responses/InternalServer'
+  /users/{userID}:
     get:
       tags:
         - users
@@ -200,11 +186,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/InternalServer'
       parameters:
         - name: userID
           in: path
@@ -212,7 +194,7 @@ paths:
           required: true
           schema:
             type: integer
-  /v1/users/username_check:
+  /users/used:
     post:
       tags:
         - users
@@ -247,17 +229,26 @@ paths:
                     description: True if usernamed used
                     example: false
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/InternalServer'
 components:
   securitySchemes:
     cookieAuth:
       type: apiKey
       in: cookie
       name: JSESSIONID
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServer:
+      description: some strange server error(lost db conn etc.)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -273,20 +264,10 @@ components:
           type: string
           description: Message to display for user
           example: Already used!
-        description:
-          type: string
-          description: Describes error for developer
-          example: Database error UNIQUE field
-    Errors:
+    ValidateError:
       type: object
-      properties:
-        fields:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Error'
-        other:
-          $ref: '#/components/schemas/Error'
-    
+      additionalProperties:
+        $ref: '#/components/schemas/Error'
     BasicUser:
       type: object
       properties:
