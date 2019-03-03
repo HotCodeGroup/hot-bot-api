@@ -8,7 +8,7 @@ info:
     name: HotCodeGroup
     url: https://github.com/HotCodeGroup
 paths:
-  /session/:
+  /session:
     get:
       tags:
         - auth
