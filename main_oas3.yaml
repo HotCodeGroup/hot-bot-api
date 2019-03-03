@@ -75,7 +75,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServer'
-  /user:
+  /users:
     post:
       tags:
         - users
