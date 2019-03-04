@@ -275,7 +275,8 @@ components:
     ValidateError:
       type: object
       additionalProperties:
-        $ref: '#/components/schemas/Error'
+        type: string
+        example: taken
     BasicUser:
       type: object
       properties:
