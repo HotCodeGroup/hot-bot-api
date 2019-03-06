@@ -177,6 +177,13 @@ paths:
       summary: Get user info by ID
       operationId: getUser
       security: []
+      parameters:
+        - name: user_id
+          in: path
+          description: id of user that needs to be get
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: User found
@@ -192,13 +199,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalServer'
-      parameters:
-        - name: user_id
-          in: path
-          description: id of user that needs to be get
-          required: true
-          schema:
-            type: integer
   /users/used:
     post:
       tags:
