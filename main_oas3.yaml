@@ -3,7 +3,7 @@ servers:
   - url: http://api.warscript.tech/v1
 info:
   title: WarScript API 
-  version: 0.0.2
+  version: 0.0.3
   contact:
     name: HotCodeGroup
     url: https://github.com/HotCodeGroup
@@ -130,6 +130,8 @@ paths:
                       type: string
                       description: New password for change password operation
                       example: qwerty4321
+                    photo:
+                      $ref: '#/components/schemas/Photo'
       responses:
         '200':
           description: Returns empty struct if user updated or errors
@@ -243,6 +245,32 @@ paths:
             
         '500':
           $ref: '#/components/responses/InternalServer'
+  /photos/server:
+    get:
+      tags:
+        - photos
+      summary: returns url for post request for photo upload
+      operationId: GetUploadServer
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: returns url for photo upload
+          content:
+            application/json: 
+              schema:
+                type: object
+                required:
+                  - upload_url
+                properties:
+                  upload_url:
+                    type: string
+                    description: url for photo upload
+                    example: "https://image1.warscript.tech/uploads"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServer'
 components:
   securitySchemes:
     cookieAuth:
@@ -271,12 +299,27 @@ components:
         message:
           type: string
           description: error description
-          example: taken
+          example: some error text
     ValidateError:
       type: object
       additionalProperties:
         type: string
         example: taken
+    Photo:
+      type: object
+      required:
+        - photo_uuid
+        - server_id
+      properties:
+        photo_uuid:
+          type: string
+          description: photo unique id
+          example: ds12dasd-adsasd21-asd
+        server_id:
+          type: integer
+          format: int64
+          description: server id where photo is stored
+          example: 1
     BasicUser:
       type: object
       properties:
@@ -301,6 +344,10 @@ components:
               type: boolean
               description: Returns if a profile is blocked
               example: true
+            photo_url:
+              type:  string
+              description: get photo
+              example: "https://image1.warscript.tech/uploads/ds12dasd-adsasd21-asd"
     SignInUser:
       type: object
       required: 
