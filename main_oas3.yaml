@@ -251,6 +251,7 @@ paths:
         - photos
       summary: returns url for post request for photo upload
       operationId: GetUploadServer
+      deprecated: true
       security:
         - cookieAuth: []
       responses:
@@ -315,17 +316,11 @@ components:
       type: object
       required:
         - photo_uuid
-        - server_id
       properties:
         photo_uuid:
           type: string
           description: photo unique id
           example: ds12dasd-adsasd21-asd
-        server_id:
-          type: integer
-          format: int64
-          description: server id where photo is stored
-          example: 1
     BasicUser:
       type: object
       properties:
@@ -350,10 +345,8 @@ components:
               type: boolean
               description: Returns if a profile is blocked
               example: true
-            photo_url:
-              type:  string
-              description: get photo
-              example: "https://image1.warscript.tech/uploads/ds12dasd-adsasd21-asd"
+            photo:
+              $ref: '#/components/schemas/Photo'
     SignInUser:
       type: object
       required: 
