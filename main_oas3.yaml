@@ -278,34 +278,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    post:
-      tags:
-        - uploads
-      summary: Saves photo on server and returns photo_uuid and server name
-      security: []
-      requestBody: 
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Upload'
-      responses:
-        '200':
-          description: Photo successfully uploaded
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessfullUpload'
-        '406':
-          description: file format not supporded
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          $ref: '#/components/responses/InternalServer'
   /uploads/{photo_UUID}:
     get:
+      tags:
+        - uploads
       summary: Returns photo in specified format by photo
       security: []
       responses:
@@ -345,6 +321,8 @@ paths:
             example: "300x300"
   /uploads:
     post:
+      tags:
+        - uploads
       summary: Saves photo on server and returns photo_uuid and server name
       security: []
       requestBody: 
