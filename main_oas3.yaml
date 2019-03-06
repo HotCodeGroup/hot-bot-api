@@ -251,6 +251,7 @@ paths:
         - photos
       summary: returns url for post request for photo upload
       operationId: GetUploadServer
+      deprecated: true
       security:
         - cookieAuth: []
       responses:
@@ -276,49 +277,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error' 
-  /uploads/{photoUUID}:
-    get:
-      tags:
-        - uploads
-      summary: Returns photo in specified format by photo
-      security: []
-      responses:
-        '200':
-          description: photo found and returned
-          content:
-            multipart/form-data:
-              schema:
-                $ref: '#/components/schemas/Upload'
-        '404':
-          description: photo not found
-          content:
-            application/json:
-              schema:
                 $ref: '#/components/schemas/Error'
-        '400':
-          description: format not supported
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          $ref: '#/components/responses/InternalServer'
-      parameters:
-        - name: photoUUID
-          in: path
-          description: id of user that needs to be get
-          required: true
-          schema:
-            type: string
-            example: "justyour-norm-uuid-none-special66666"
-        - name: format
-          in: query
-          description: specifies returning format
-          schema:
-            type: string
-            example: "300x300"
-  /uploads:
     post:
       tags:
         - uploads
@@ -345,6 +304,71 @@ paths:
                 $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalServer'
+  /uploads/{photo_UUID}:
+    get:
+      summary: Returns photo in specified format by photo
+      security: []
+      responses:
+        '200':
+          description: photo found and returned
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Upload'
+        '400':
+          description: format not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
+      parameters:
+        - name: photo_UUID
+          in: path
+          description: id of user that needs to be get
+          required: true
+          schema:
+            type: string
+            example: "justyour-norm-uuid-none-special66666"
+        - name: format
+          in: query
+          description: specifies returning format
+          schema:
+            type: string
+            example: "300x300"
+  /uploads:
+    post:
+      summary: Saves photo on server and returns photo_uuid and server name
+      security: []
+      requestBody: 
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Upload'
+      responses:
+        '200':
+          description: Photo successfully uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfullUpload'
+        '406':
+          description: file format not supporded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
+
 components:
   securitySchemes:
     cookieAuth:
@@ -383,17 +407,11 @@ components:
       type: object
       required:
         - photo_uuid
-        - server_id
       properties:
         photo_uuid:
           type: string
           description: photo unique id
           example: ds12dasd-adsasd21-asd
-        server_id:
-          type: integer
-          format: int64
-          description: server id where photo is stored
-          example: 1
     BasicUser:
       type: object
       properties:
@@ -418,27 +436,8 @@ components:
               type: boolean
               description: Returns if a profile is blocked
               example: true
-            photo_url:
-              type:  string
-              description: get photo
-              example: "https://image1.warscript.tech/uploads/ds12dasd-adsasd21-asd"
-    Upload:
-      type: object
-      properties:
-        photo:
-          type: string
-          format: binary
-    SuccessfullUpload:
-      type: object
-      properties:
-        photo_uuid: 
-          type: string
-          description: UUID for photo on server
-          example: "justyour-norm-uuid-none-special66666"
-        server_id: 
-          type: integer
-          description: server id
-          example: 1
+            photo:
+              $ref: '#/components/schemas/Photo'
     SignInUser:
       type: object
       required: 
@@ -453,6 +452,19 @@ components:
           type: string
           description: secret word for login
           example: qwerty1234
+    Upload:
+      type: object
+      properties:
+        photo:
+          type: string
+          format: binary
+    SuccessfullUpload:
+      type: object
+      properties:
+        photo_uuid: 
+          type: string
+          description: UUID for photo on server
+          example: "justyour-norm-uuid-none-special66666"
     SignUpUser:
       allOf:
         - $ref: '#/components/schemas/BasicUser'

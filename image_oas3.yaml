@@ -8,7 +8,7 @@ info:
     name: HotCodeGroup
     url: https://github.com/HotCodeGroup
 paths:
-  /uploads/{photoUUID}:
+  /uploads/{photo_UUID}:
     get:
       summary: Returns photo in specified format by photo
       security: []
@@ -19,14 +19,14 @@ paths:
             multipart/form-data:
               schema:
                 $ref: '#/components/schemas/Upload'
-        '404':
-          description: photo not found
+        '400':
+          description: format not supported
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '400':
-          description: format not supported
+        '404':
+          description: photo not found
           content:
             application/json:
               schema:
@@ -34,7 +34,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServer'
       parameters:
-        - name: photoUUID
+        - name: photo_UUID
           in: path
           description: id of user that needs to be get
           required: true
@@ -103,10 +103,3 @@ components:
           type: string
           description: UUID for photo on server
           example: "justyour-norm-uuid-none-special66666"
-        server_id: 
-          type: integer
-          description: server id
-          example: 1
-
-
-    
