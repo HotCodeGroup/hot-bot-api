@@ -103,10 +103,3 @@ components:
           type: string
           description: UUID for photo on server
           example: "justyour-norm-uuid-none-special66666"
-        server_id: 
-          type: integer
-          description: server id
-          example: 1
-
-
-    
