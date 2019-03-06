@@ -277,6 +277,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error' 
+  /uploads/{photoUUID}:
+    get:
+      tags:
+        - uploads
+      summary: Returns photo in specified format by photo
+      security: []
+      responses:
+        '200':
+          description: photo found and returned
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Upload'
+        '404':
+          description: photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: format not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
+      parameters:
+        - name: photoUUID
+          in: path
+          description: id of user that needs to be get
+          required: true
+          schema:
+            type: string
+            example: "justyour-norm-uuid-none-special66666"
+        - name: format
+          in: query
+          description: specifies returning format
+          schema:
+            type: string
+            example: "300x300"
+  /uploads:
+    post:
+      tags:
+        - uploads
+      summary: Saves photo on server and returns photo_uuid and server name
+      security: []
+      requestBody: 
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Upload'
+      responses:
+        '200':
+          description: Photo successfully uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfullUpload'
+        '406':
+          description: file format not supporded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
 components:
   securitySchemes:
     cookieAuth:
@@ -354,6 +422,23 @@ components:
               type:  string
               description: get photo
               example: "https://image1.warscript.tech/uploads/ds12dasd-adsasd21-asd"
+    Upload:
+      type: object
+      properties:
+        photo:
+          type: string
+          format: binary
+    SuccessfullUpload:
+      type: object
+      properties:
+        photo_uuid: 
+          type: string
+          description: UUID for photo on server
+          example: "justyour-norm-uuid-none-special66666"
+        server_id: 
+          type: integer
+          description: server id
+          example: 1
     SignInUser:
       type: object
       required: 
@@ -446,3 +531,5 @@ components:
           type: boolean
           description: Returns if a game is available for new bots
           example: true
+
+
