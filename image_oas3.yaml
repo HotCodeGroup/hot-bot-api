@@ -1,0 +1,112 @@
+openapi: 3.0.0
+servers:
+  - url: http://image1.warscript.tech
+info:
+  title: Image server API 
+  version: 0.0.1
+  contact:
+    name: HotCodeGroup
+    url: https://github.com/HotCodeGroup
+paths:
+  /uploads/{photoUUID}:
+    get:
+      summary: Returns photo in specified format by photo
+      security: []
+      responses:
+        '200':
+          description: photo found and returned
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/Upload'
+        '404':
+          description: photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: format not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
+      parameters:
+        - name: photoUUID
+          in: path
+          description: id of user that needs to be get
+          required: true
+          schema:
+            type: string
+            example: "justyour-norm-uuid-none-special66666"
+        - name: format
+          in: query
+          description: specifies returning format
+          schema:
+            type: string
+            example: "300x300"
+  /uploads:
+    post:
+      summary: Saves photo on server and returns photo_uuid and server name
+      security: []
+      requestBody: 
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Upload'
+      responses:
+        '200':
+          description: Photo successfully uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfullUpload'
+        '406':
+          description: file format not supporded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
+components:
+  responses:
+    InternalServer:
+      description: some strange server error(lost db conn etc.)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Upload:
+      type: object
+      properties:
+        photo:
+          type: string
+          format: binary
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: error description
+          example: taken
+    SuccessfullUpload:
+      type: object
+      properties:
+        photo_uuid: 
+          type: string
+          description: UUID for photo on server
+          example: "justyour-norm-uuid-none-special66666"
+        server_id: 
+          type: integer
+          description: server id
+          example: 1
+
+
+    
