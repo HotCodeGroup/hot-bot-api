@@ -245,43 +245,10 @@ paths:
             
         '500':
           $ref: '#/components/responses/InternalServer'
-  /photos/server:
+  /photos/{photo_uuid}:
     get:
       tags:
         - photos
-      summary: returns url for post request for photo upload
-      operationId: GetUploadServer
-      deprecated: true
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: returns url for photo upload
-          content:
-            application/json: 
-              schema:
-                type: object
-                required:
-                  - upload_url
-                properties:
-                  upload_url:
-                    type: string
-                    description: url for photo upload
-                    example: "https://image1.warscript.tech/uploads"
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServer'
-        '503':
-          description: all upload servers are unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /uploads/{photo_UUID}:
-    get:
-      tags:
-        - uploads
       summary: Returns photo in specified format by photo
       security: []
       responses:
@@ -306,7 +273,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServer'
       parameters:
-        - name: photo_UUID
+        - name: photo_uuid
           in: path
           description: id of user that needs to be get
           required: true
@@ -319,10 +286,10 @@ paths:
           schema:
             type: string
             example: "300x300"
-  /uploads:
+  /photos:
     post:
       tags:
-        - uploads
+        - photos
       summary: Saves photo on server and returns photo_uuid and server name
       security: []
       requestBody: 
