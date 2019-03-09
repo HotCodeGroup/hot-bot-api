@@ -130,8 +130,6 @@ paths:
                       type: string
                       description: New password for change password operation
                       example: qwerty4321
-                    photo:
-                      $ref: '#/components/schemas/Photo'
       responses:
         '200':
           description: Returns empty struct if user updated or errors
@@ -348,15 +346,6 @@ components:
       additionalProperties:
         type: string
         example: taken
-    Photo:
-      type: object
-      required:
-        - photo_uuid
-      properties:
-        photo_uuid:
-          type: string
-          description: photo unique id
-          example: ds12dasd-adsasd21-asd
     BasicUser:
       type: object
       properties:
@@ -364,6 +353,10 @@ components:
           type: string
           description: Name for login
           example: xXxNaGiBaToRxXx
+        photo_uuid:
+          type: string
+          description: photo unique id
+          example: ds12dasd-adsasd21-asd
     InfoUser:
       allOf:
         - $ref: '#/components/schemas/BasicUser'
@@ -381,8 +374,6 @@ components:
               type: boolean
               description: Returns if a profile is blocked
               example: true
-            photo:
-              $ref: '#/components/schemas/Photo'
     SignInUser:
       type: object
       required: 
