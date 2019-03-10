@@ -303,6 +303,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessfullUpload'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '406':
           description: file format not supporded
           content:
