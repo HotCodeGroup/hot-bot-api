@@ -311,6 +311,74 @@ paths:
                 $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalServer'
+  /games/{game_id}:
+    get:
+      tags:
+        - games
+      summary: Get game info by ID
+      operationId: getGame
+      security: []
+      parameters:
+        - name: game_id
+          in: path
+          description: id of game that needs to be get
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: game found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
+  /games/{game_id}/leaderboard:
+    get:
+      tags:
+        - games
+      summary: Get game leaderboard info by ID
+      operationId: getGameLeaderboard
+      security: []
+      parameters:
+        - name: game_id
+          in: path
+          description: id of game that needs to be get
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: leaderboard users count limit
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: leaderboard users offset
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: game found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
 
 components:
   securitySchemes:
@@ -450,9 +518,6 @@ components:
       required:
         - id
         - title
-        - description
-        - rulesURL
-        - active
       properties:
         id:
           type: integer
@@ -462,22 +527,6 @@ components:
         title: 
           type: string
           description: Name of game
-          example: Ping Pong  
-        description:
-          type: string
-          description: Description of game
-          example: Write bot for playing ping pong          
-        rulesURL: 
-          type: string
-          description: URL to the rules for game
-          example: https://hotbot.game/s/1548595030145/assets/documentation/pingpong.pdf?rnd
-        previewURL: 
-          type: string
-          description: URL to the game`s preview
-          example: https://hotbot.game/s/1548595030145/assets/application/img/ping-pong-sample.png
-        active:
-          type: boolean
-          description: Returns if a game is available for new bots
-          example: true
+          example: Ping Pong 
 
 
