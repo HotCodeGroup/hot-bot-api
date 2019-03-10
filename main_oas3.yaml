@@ -376,7 +376,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Game'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScoredUser'
         '404':
           description: game not found
           content:
@@ -448,6 +450,18 @@ components:
               type: boolean
               description: Returns if a profile is blocked
               example: true
+    ScoredUser:
+      allOf:
+        - $ref: '#/components/schemas/InfoUser'
+        - type: object
+          required:
+            - score
+          properties:
+            score:
+              type: integer
+              format: int64
+              description: Game Score
+              example: 100
     SignInUser:
       type: object
       required: 
