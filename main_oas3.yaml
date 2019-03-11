@@ -372,7 +372,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: game found
+          description: game leaderboard found
           content:
             application/json:
               schema:
@@ -387,7 +387,40 @@ paths:
                 $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalServer'
-
+  /games/{game_id}/leaderboard/count:
+    get:
+      tags:
+        - games
+      summary: Get game total user count by ID
+      operationId: getGameTotalPlayers
+      security: []
+      parameters:
+        - name: game_id
+          in: path
+          description: id of game that needs to be get
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: total user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 100
+                    description: total amount of users who scored
+        '404':
+          description: game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServer'
 components:
   securitySchemes:
     cookieAuth:
