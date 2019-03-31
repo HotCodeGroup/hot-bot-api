@@ -335,7 +335,7 @@ paths:
                   $ref: '#/components/schemas/Game'
         '500':
           $ref: '#/components/responses/InternalServer'
-  /games/{game_id}:
+  /games/{game_slug}:
     get:
       tags:
         - games
@@ -343,12 +343,12 @@ paths:
       operationId: getGame
       security: []
       parameters:
-        - name: game_id
+        - name: game_slug
           in: path
-          description: id of game that needs to be get
+          description: slug of game that needs to be get
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: game found
@@ -364,7 +364,7 @@ paths:
                 $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalServer'
-  /games/{game_id}/leaderboard:
+  /games/{game_slug}/leaderboard:
     get:
       tags:
         - games
@@ -372,12 +372,12 @@ paths:
       operationId: getGameLeaderboard
       security: []
       parameters:
-        - name: game_id
+        - name: game_slug
           in: path
-          description: id of game that needs to be get
+          description: slug of game that needs to be get
           required: true
           schema:
-            type: integer
+            type: string
         - name: limit
           in: query
           description: leaderboard users count limit
@@ -405,20 +405,20 @@ paths:
                 $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalServer'
-  /games/{game_id}/leaderboard/count:
+  /games/{game_slug}/leaderboard/count:
     get:
       tags:
         - games
-      summary: Get game total user count by ID
+      summary: Get game total user count by slug
       operationId: getGameTotalPlayers
       security: []
       parameters:
-        - name: game_id
+        - name: game_slug
           in: path
-          description: id of game that needs to be get
+          description: slug of game that needs to be get
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: total user
@@ -587,17 +587,31 @@ components:
     Game: 
       type: object
       required:
-        - id
+        - slug
         - title
       properties:
-        id:
-          type: integer
-          format: int64
-          description: game ID
-          example: 1
+        slug:
+          type: string
+          description: short name of the game(use for idenity)
+          example: pong
         title: 
           type: string
-          description: Name of game
-          example: Ping Pong 
-
+          description: full name of the game
+          example: Pong 
+        description:
+          type: string
+          description: information about game process, history etc.
+          example: Pong is the game for two players...
+        rules:
+          type: string
+          description: information about bot api
+        code_example:
+          type: string
+          description: example code for simple bot
+        logo_uuid:
+          type: string
+          description: logo for main page of the game
+        background_uuid:
+          type: string
+          description: picture for carousel and background main page
 
